@@ -16,7 +16,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
     && firstP.y != secondP.y, "cannot create line segment with the same point")
 }
 
-case class Ray(startingP: Point){
+case class Ray(startingP: Point) {
   def apply(sP: Point): LineSegment = LineSegment(sP, Point(sP.x + 500, sP.y))
 }
 
