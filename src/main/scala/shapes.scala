@@ -19,17 +19,32 @@ case class LineSegment(firstP: Point, secondP: Point) {
     && firstP.y != secondP.y, "cannot create line segment with the same point")
 
   /** Finds the equation of a line that goes through two points
-    * of a line segment.
+    * of a line segment. If a vertical line is formed and
+    * m = +- infinity, then equation is of the form x = b.
     *
     * @return slope-intercept equation y = mx + b as (m, b)
+    *         or vertical line equation x = b as (+-Infinity, b)
     */
   def equation(): (Double, Double) = {
     val line: LineSegment = LineSegment.this
     val p1: Point = line.firstP
     val p2: Point = line.secondP
     val m: Double = (p2.y.toDouble - p1.y) / (p2.x - p1.x)
-    val b: Double = p1.y.toDouble / (m * p1.x)
+    val b: Double = m match {
+      case 0.00 => p1.y.toDouble
+      case Double.NegativeInfinity => p1.x.toDouble
+      case Double.PositiveInfinity => p1.x.toDouble
+      case _ => p1.y.toDouble / (m * p1.x)
+    }
     (m, b)
+  }
+
+  // defines if a line segment is vertical
+  val vertical: Boolean = {
+    val line: LineSegment = LineSegment.this
+    val eq = line.equation()
+    if(eq._1 == Double.NegativeInfinity || eq._1 == Double.PositiveInfinity) true
+    else false
   }
 
   /** Determines if two line segments intersect.
@@ -42,19 +57,30 @@ case class LineSegment(firstP: Point, secondP: Point) {
     val eq1 = line1.equation()
     val eq2 = line2.equation()
 
-    // case where lines are parallel if they have the same slope
-    if(eq1._1 == eq2._1){
-      false
+    // determine if lines are parallel with same slope or both vertical
+    val parallel: Boolean = {
+      if(eq1._1 == eq2._1 || (line1.vertical && line2.vertical)) true
+      else false
     }
 
+    // case where lines are parallel
+    if(parallel) false
     // case for non-parallel lines
     else{
-      // finds the point of intersection
-      val intersectPx: Int = (eq2._2 - eq1._2 / eq1._1 - eq2._1).toInt
-      val intersectPy: Int = (intersectPx * eq1._1 + eq1._2).toInt
+      // finds the point of intersection depending if either line is vertical
+      val intersectPx: Int = (line1.vertical, line2.vertical) match {
+        case (true, false) => eq1._2.toInt
+        case (false, true) => eq2._2.toInt
+        case (false, false) => (eq2._2 - eq1._2 / eq1._1 - eq2._1).toInt
+      }
+      val intersectPy: Int = (line1.vertical, line2.vertical) match {
+        case(true, false) => (intersectPx * eq2._1 + eq2._2).toInt
+        case _ => (intersectPx * eq1._1 + eq1._2).toInt
+      }
       val intP: Point = Point(intersectPx, intersectPy)
 
       //checks if point of intersection is on either line segment
+      // TODO fix DRY code
       val a = List(line1.firstP.x, line1.secondP.x)
       val b = List(line1.firstP.y, line1.secondP.y)
       val c = List(line2.firstP.x, line2.secondP.x)
@@ -83,6 +109,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
 case class Ray(startingP: Point) {
   def apply(sP: Point): LineSegment = LineSegment(sP, Point(sP.x + 500, sP.y))
 }
+
 
 /**
  * A decorator for specifying a shape's location.

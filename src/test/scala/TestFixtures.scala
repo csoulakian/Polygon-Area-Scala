@@ -6,6 +6,20 @@ object TestFixtures {
 
   val singlePoint = Point(2, 3)
 
+  /** fixtures for TestLines
+    * @see LinesFixture.jpg
+    */
+  val blueTop = LineSegment(Point(-5, 5), Point(5, 5))
+  val blueBottom = LineSegment(Point(5, -5), Point(-5, -5))
+  val blueLeft = LineSegment(Point(-5, 5), Point(-5, -5))
+  val blueRight = LineSegment(Point(5, -5), Point(5, 5))
+
+  val redLeft = LineSegment(Point(-8, -3), Point(3, 8))
+  val redRight = LineSegment(Point(8, 3), Point(-3, -8))
+
+  val greenLeft = LineSegment(Point(-8, 3), Point(3, -8))
+  val greenRight = LineSegment(Point(8, -3), Point(-3, 8))
+
   // val simpleRectangle = Rectangle(80, 120)
 
   // val simpleLocation = Location(70, 30, Rectangle(80, 120))
