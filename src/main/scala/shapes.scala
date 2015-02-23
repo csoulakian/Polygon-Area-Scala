@@ -47,6 +47,9 @@ case class LineSegment(firstP: Point, secondP: Point) {
     else false
   }
 
+  // property of a line segment to indicate it was originally a ray. default is false
+  var originalRay: Boolean = false
+
   /** Determines if two line segments intersect.
     *
     * @param line2 second line segment
@@ -79,14 +82,23 @@ case class LineSegment(firstP: Point, secondP: Point) {
       }
       val intP: Point = Point(intersectPx, intersectPy)
 
-      //checks if point of intersection is on either line segment
       // TODO fix DRY code
-      val a = List(line1.firstP.x, line1.secondP.x)
-      val b = List(line1.firstP.y, line1.secondP.y)
-      val c = List(line2.firstP.x, line2.secondP.x)
-      val d = List(line2.firstP.y, line2.secondP.y)
-      (a.min <= intP.x && intP.x <= a.max && b.min <= intP.y && intP.y <= b.max) ||
-        (c.min <= intP.x && intP.x <= c.max && d.min <= intP.y && intP.y <= d.max)
+      // if line2 was originally a ray, checks if point of intersection is on
+      // line segment 1 only
+      if (line2.originalRay) {
+        val a = List(line1.firstP.x, line1.secondP.x)
+        val b = List(line1.firstP.y, line1.secondP.y)
+        a.min <= intP.x && intP.x <= a.max && b.min <= intP.y && intP.y <= b.max
+      }
+      // else - checks if point of intersection is on either line segment
+      else {
+        val a = List(line1.firstP.x, line1.secondP.x)
+        val b = List(line1.firstP.y, line1.secondP.y)
+        val c = List(line2.firstP.x, line2.secondP.x)
+        val d = List(line2.firstP.y, line2.secondP.y)
+        (a.min <= intP.x && intP.x <= a.max && b.min <= intP.y && intP.y <= b.max) ||
+          (c.min <= intP.x && intP.x <= c.max && d.min <= intP.y && intP.y <= d.max)
+      }
     }
   }
 
@@ -104,10 +116,17 @@ case class LineSegment(firstP: Point, secondP: Point) {
 
 /** A ray representing a horizontal line segment that starts at a
   * particular point and ends at a point 500 units away.
+  * When apply method is called, sets resulting line segment's
+  * originalRay property to true.
+  *
   * @param startingP the initial starting point of a ray
   */
 case class Ray(startingP: Point) {
-  def apply(sP: Point): LineSegment = LineSegment(sP, Point(sP.x + 500, sP.y))
+  def apply(sP: Point): LineSegment = {
+    val ls = LineSegment(sP, Point(sP.x + 500, sP.y))
+    ls.originalRay = true
+    ls
+  }
 }
 
 

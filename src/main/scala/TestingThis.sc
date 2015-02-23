@@ -64,8 +64,12 @@ case class LineSegment(firstP: Point, secondP: Point) {
     }
   }
 }
-val line1 = LineSegment(Point(-5, 5), Point(5, 5)) //blueTop
-val line2 = LineSegment(Point(-5, 5), Point(-5, -5)) //blueLeft
+case class Ray(startingP: Point) {
+  def apply(sP: Point): LineSegment = LineSegment(sP, Point(sP.x + 500, sP.y))
+}
+val line1 = LineSegment(Point(5, -5), Point(5, 5)) // blueRight
+val ray = Ray(Point(8, 0))
+val line2 = ray.apply(ray.startingP)
 val eq1 = line1.equation()
 val eq2 = line2.equation()
 val intersectPx: Int = (line1.vertical, line2.vertical) match {

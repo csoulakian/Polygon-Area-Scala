@@ -62,6 +62,7 @@ class TestLines extends FunSuite{
     assert(!blueRight.lineRayIntersect(Ray(Point(5, 8))))
 
     // ray starts to the right of segment
+    // not passing, code thinks there's an intersection at (5,0)
     assert(!blueRight.lineRayIntersect(Ray(Point(8, 0))))
 
     // ray starts below segment
@@ -70,6 +71,7 @@ class TestLines extends FunSuite{
 
   test("Check for intersection of a ray and horizontal line segment") {
     // ray starts to the left of segment
+    // not passing, code doesn't take into account overlapping ray and line segment
     assert(blueTop.lineRayIntersect(Ray(Point(-8, 5))))
 
     // ray starts above segment
