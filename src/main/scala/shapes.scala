@@ -36,12 +36,14 @@ case class LineSegment(firstP: Point, secondP: Point) {
       case 0.00 => p1.y.toDouble
       case Double.NegativeInfinity => p1.x.toDouble
       case Double.PositiveInfinity => p1.x.toDouble
-      case _ => p1.y.toDouble / (m * p1.x)
+      case _ => p1.y.toDouble - (m * p1.x)
     }
     (m, b)
   }
 
-  // defines if a line segment is vertical
+  /** Determines if a line segment is vertical,
+    * meaning it has no slope but its equation returns +- Infinity
+    */
   val vertical: Boolean = {
     val line: LineSegment = LineSegment.this
     val eq = line.equation()
@@ -51,6 +53,28 @@ case class LineSegment(firstP: Point, secondP: Point) {
 
   // property of a line segment to indicate it was originally a ray. default is false
   var originalRay: Boolean = false
+
+  /** Determines if a point found on a line is within a particular line segment.
+    * Only checks x and y constrains from the line segment.
+    *
+    * @param point given point found on the line
+    * @return true if point is on line segment
+    */
+  def pointOnLineSeg(point: Point): Boolean = {
+    val line: LineSegment = LineSegment.this
+    val a = List(line.firstP.x, line.secondP.x)
+    val b = List(line.firstP.y, line.secondP.y)
+    a.min <= point.x && point.x <= a.max && b.min <= point.y && point.y <= b.max
+  }
+
+  def pointOnLine(p: Point): Boolean = {
+    val line = LineSegment.this
+    val eq = line.equation()
+    if(vertical) {
+      p.x == eq._2
+    }
+    else p.x * eq._1 + eq._2 == p.y
+  }
 
   /** Determines if two line segments intersect.
     *
@@ -76,7 +100,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
       val intersectPx: Int = (line1.vertical, line2.vertical) match {
         case (true, false) => eq1._2.toInt
         case (false, true) => eq2._2.toInt
-        case (false, false) => (eq2._2 - eq1._2 / eq1._1 - eq2._1).toInt
+        case (false, false) => ((eq2._2 - eq1._2) / (eq1._1 - eq2._1)).toInt
         case (true, true) => sys.exit()
       }
       val intersectPy: Int = (line1.vertical, line2.vertical) match {
@@ -85,23 +109,12 @@ case class LineSegment(firstP: Point, secondP: Point) {
       }
       val intP: Point = Point(intersectPx, intersectPy)
 
-      // TODO fix DRY code
       // if line2 was originally a ray, checks if point of intersection is on
-      // line segment 1 only
+      // line segment 1 only. otherwise, checks on either line segment.
       if (line2.originalRay) {
-        val a = List(line1.firstP.x, line1.secondP.x)
-        val b = List(line1.firstP.y, line1.secondP.y)
-        a.min <= intP.x && intP.x <= a.max && b.min <= intP.y && intP.y <= b.max
+        line1.pointOnLineSeg(intP)
       }
-      // else - checks if point of intersection is on either line segment
-      else {
-        val a = List(line1.firstP.x, line1.secondP.x)
-        val b = List(line1.firstP.y, line1.secondP.y)
-        val c = List(line2.firstP.x, line2.secondP.x)
-        val d = List(line2.firstP.y, line2.secondP.y)
-        (a.min <= intP.x && intP.x <= a.max && b.min <= intP.y && intP.y <= b.max) ||
-          (c.min <= intP.x && intP.x <= c.max && d.min <= intP.y && intP.y <= d.max)
-      }
+      else line1.pointOnLineSeg(intP) || line2.pointOnLineSeg(intP)
     }
   }
 
@@ -113,6 +126,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
   def lineRayIntersect(ray: Ray): Boolean = {
     val line: LineSegment = LineSegment.this
     val rayAsSegment = ray.apply(ray.startingP)
+    rayAsSegment.originalRay = true
     line.lineLineIntersect(rayAsSegment)
   }
 }
@@ -144,6 +158,22 @@ case class Polygon(inputPoints: Point*) extends Shape {
   def polyLineSeg(): List[LineSegment] = {
     val line = this.points.sliding(2).map {case Seq(a, b) => LineSegment(a, b)}.toList
     line :+ LineSegment(this.points.last, this.points(0))
+  }
+
+  def pointInsidePoly(p: Point): Boolean = {
+    val polygon: Polygon = Polygon.this
+
+    val perChecks: List[Boolean] = for(l:LineSegment <- polygon.polyLineSeg()) yield l.pointOnLine(p)
+    //first check if point is on perimeter of polygon, point is considered inside polygon
+    if(perChecks.contains(true)) true
+    else {
+      val ray = Ray(p)
+      val hits: List[Boolean] = for(l:LineSegment <- polygon.polyLineSeg()) yield l.lineRayIntersect(ray)
+      if (hits.count(_ == true) %2 == 0){
+        false
+      }
+      else true
+    }
   }
 }
 

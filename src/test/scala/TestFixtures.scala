@@ -24,7 +24,7 @@ object TestFixtures {
   /** fixtures for TestPolygon
     *
     */
-  val good = Seq(Point(2,3), Point(5,6), Point(9,12), null)
+  val good = Seq(Point(2,3), Point(5,6), Point(7,4), null)
   val simplePolygon = Polygon(good: _*)
 
   // val simpleRectangle = Rectangle(80, 120)
