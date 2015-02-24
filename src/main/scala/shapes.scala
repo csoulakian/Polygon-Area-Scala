@@ -1,5 +1,7 @@
 package edu.luc.cs.laufer.cs372.shapes
 
+import edu.luc.cs.laufer.cs372.shapes
+
 /**
  * Location, Group code from shapes-android-scala
  *
@@ -75,6 +77,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
         case (true, false) => eq1._2.toInt
         case (false, true) => eq2._2.toInt
         case (false, false) => (eq2._2 - eq1._2 / eq1._1 - eq2._1).toInt
+        case (true, true) => sys.exit()
       }
       val intersectPy: Int = (line1.vertical, line2.vertical) match {
         case(true, false) => (intersectPx * eq2._1 + eq2._2).toInt
@@ -126,6 +129,21 @@ case class Ray(startingP: Point) {
     val ls = LineSegment(sP, Point(sP.x + 500, sP.y))
     ls.originalRay = true
     ls
+  }
+}
+
+/** A simple closed polygon composed of three or more points.
+  * Sequence of non-null inputPoints is in val points.
+  *
+  * @param inputPoints arbitrary number of input points
+  */
+case class Polygon(inputPoints: Point*) extends Shape {
+  val points = inputPoints.filter(_ != null)
+  require(points.size > 2, "not enough non-null points!")
+
+  def polyLineSeg(): List[LineSegment] = {
+    val line = this.points.sliding(2).map {case Seq(a, b) => LineSegment(a, b)}.toList
+    line :+ LineSegment(this.points.last, this.points(0))
   }
 }
 
