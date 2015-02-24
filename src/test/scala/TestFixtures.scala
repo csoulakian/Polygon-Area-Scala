@@ -4,11 +4,11 @@ object TestFixtures {
 
   // TODO comment these fixtures back in after adding the required case classes
 
-  val singlePoint = Point(2, 3)
-
   /** fixtures for TestLines
     * @see LinesFixture.jpg
     */
+  val singlePoint = Point(2, 3)
+
   val blueTop = LineSegment(Point(-5, 5), Point(5, 5))
   val blueBottom = LineSegment(Point(5, -5), Point(-5, -5))
   val blueLeft = LineSegment(Point(-5, 5), Point(-5, -5))
@@ -19,6 +19,13 @@ object TestFixtures {
 
   val greenLeft = LineSegment(Point(-8, 3), Point(3, -8))
   val greenRight = LineSegment(Point(8, -3), Point(-3, 8))
+
+
+  /** fixtures for TestPolygon
+    *
+    */
+  val good = Seq(Point(2,3), Point(5,6), Point(9,12), null)
+  val simplePolygon = Polygon(good: _*)
 
   // val simpleRectangle = Rectangle(80, 120)
 

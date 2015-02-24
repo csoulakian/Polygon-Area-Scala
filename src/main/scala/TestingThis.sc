@@ -9,8 +9,7 @@ case class Polygon(inputPoints: Point*) extends Shape {
     line :+ LineSegment(this.points.last, this.points(0))
   }
 }
-val l= Seq(Point(2,3), Point(5,6), Point(9,12), Point(15,20), null)
-val polygon = Polygon(l: _*)
-
-polygon.polyLineSeg()
+val good = Seq(Point(2,3), Point(5,6), Point(9,12), null)
+val simplePolygon = Polygon(good: _*)
+simplePolygon.polyLineSeg()
 
