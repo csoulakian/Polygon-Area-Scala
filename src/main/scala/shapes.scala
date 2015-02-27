@@ -12,6 +12,9 @@ sealed trait Shape
 /** A point with a specified x and y value. */
 case class Point(x: Int, y: Int)
 
+/** A rectangle with specified width and height. */
+case class Rectangle(width: Int, height: Int) extends Shape
+
 /** A line segment representing a line between two different points.
   * @param firstP starting point of a line segment
   * @param secondP ending point of a line segment
@@ -77,6 +80,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
   }
 
   /** Determines if two line segments intersect.
+    * Overlapping aspects of algorithm from http://stackoverflow.com/a/16314158
     *
     * @param line2 second line segment
     * @return true if they intersect, otherwise false
@@ -86,17 +90,29 @@ case class LineSegment(firstP: Point, secondP: Point) {
     val eq1 = line1.equation()
     val eq2 = line2.equation()
 
-    // determine if lines are parallel with same slope or both vertical
+    // determine if lines are parallel with same slope
     val parallel: Boolean = {
-      if(eq1._1 == eq2._1 || (line1.vertical && line2.vertical)) true
+      if (eq1._1 == eq2._1) true
       else false
     }
 
-    // case where lines are parallel
-    if(parallel) false
+    // if lines are parallel, check if they overlap
+    if(parallel) {
+      if(eq1._2 != eq2._2) false
+      else if (line1.pointOnLineSeg(line2.firstP) || line1.pointOnLineSeg(line2.secondP)) true
+      else false
+    }
+
+    // if both lines are vertical, check if they overlap
+    else if(line1.vertical && line2.vertical){
+      if(line1.firstP.x != line2.firstP.x) false
+      else if (line1.pointOnLineSeg(line2.firstP) || line1.pointOnLineSeg(line2.secondP)) true
+      else false
+    }
+
     // case for non-parallel lines
     else{
-      // finds the point of intersection depending if either line is vertical
+      // finds the point of intersection depending on which line is vertical or neither
       val intersectPx: Int = (line1.vertical, line2.vertical) match {
         case (true, false) => eq1._2.toInt
         case (false, true) => eq2._2.toInt

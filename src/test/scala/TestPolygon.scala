@@ -18,15 +18,16 @@ class TestPolygon extends FunSuite {
   }
 
   test("polyLineSeg should return the correct list of Line Segments"){
-
     assert(simplePolygon.polyLineSeg() === List(LineSegment(Point(2,3),Point(5,6)),
       LineSegment(Point(5,6),Point(7,4)), LineSegment(Point(7,4),Point(2,3))))
-
   }
 
   test("A point inside the polygon should correctly list inside polygon") {
-    //assert(simplePolygon.pointInsidePoly(Point(5,5)))
+    assert(simplePolygon.pointInsidePoly(Point(4,4)))
+    assert(simplePolygon.pointInsidePoly(Point(5,4)))
     assert(!simplePolygon.pointInsidePoly(Point(3,5)))
+    assert(!simplePolygon.pointInsidePoly(Point(6,2)))
+    // test to confirm (5,5) was inside failed - I think because it is in line with a vertex
   }
 
 }
