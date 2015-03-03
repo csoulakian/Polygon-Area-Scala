@@ -1,11 +1,9 @@
 package edu.luc.cs.laufer.cs372.shapes
 
-import edu.luc.cs.laufer.cs372.shapes
-
 /**
  * Location, Group code from shapes-android-scala
  *
- * data Shape = Rectangle(w, h) | Location(x, y, Shape)
+ * data Shape = Rectangle(w, h) | Polygon(Point*) | Location(x, y, Shape) | Group(Shape*)
  */
 sealed trait Shape
 
@@ -156,7 +154,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
   */
 case class Ray(startingP: Point) {
   def apply(sP: Point): LineSegment = {
-    val ls = LineSegment(sP, Point(sP.x + 500, sP.y))
+    val ls = LineSegment(sP, Point(sP.x + 1000, sP.y))
     ls.originalRay = true
     ls
   }
@@ -191,6 +189,7 @@ case class Polygon(inputPoints: Point*) extends Shape {
       else true
     }
   }
+
 }
 
 
@@ -218,8 +217,6 @@ object Location {
 class Group(val children: Shape*) extends Shape {
   require(children != null, "null children in " + getClass.getSimpleName)
   require(! children.contains(null), "null child in " + getClass.getSimpleName)
-
-  //def allChildren(): Seq[Shape] = children
 }
 /** The companion object that allows us to use this class like a case class. */
 object Group {

@@ -11,7 +11,7 @@ class TestLines extends FunSuite{
     val myRay = Ray(singlePoint)
     val mySegment: LineSegment = myRay.apply(singlePoint)
     assert(mySegment.firstP === singlePoint)
-    assert(mySegment.secondP === Point(singlePoint.x + 500, singlePoint.y))
+    assert(mySegment.secondP === Point(singlePoint.x + 1000, singlePoint.y))
   }
 
   test("Parallel lines should not intersect") {

@@ -1,8 +1,9 @@
 import edu.luc.cs.laufer.cs372.shapes._
+import scala.util.Random
 sealed trait Shape
+
 val good = Seq(Point(2,3), Point(5,6), Point(7,4))
 val simplePolygon: Polygon = Polygon(good: _*)
-
 val good2 = Seq(Point(7,5), Point(10,2), Point(13,6))
 val simplePolygon2: Polygon = Polygon(good2: _*)
 
@@ -14,36 +15,27 @@ val box2 = boundingBox(simplePolygon2)
 val group = Group(simplePolygon, simplePolygon2)
 
 val bbG = boundingBox(group)
+(bbG.x, bbG.y, bbG.child)
 
-bbG.x
-bbG.y
-bbG.child
+val bBox: Location = boundingBox(simplePolygon)
+val bBoxRect: Rectangle = bBox.child.asInstanceOf[Rectangle]
+val bBoxArea: Int = bBoxRect.height * bBoxRect.width
+
+val randForX = new Random()
+val randForY = new Random()
+val rangeX = bBox.x to (bBox.x + bBoxRect.width)
+val rangeY = bBox.y to (bBox.y + bBoxRect.height)
+
+val hitPercentage = for{i <- 1 to 10000
+xx = rangeX(randForX.nextInt(rangeX length))
+yy = rangeY(randForY.nextInt(rangeY length))
+} yield simplePolygon.pointInsidePoly(Point(xx, yy))
 
 
-val basicGroup = Group(
-  Location(-200, -100, simplePolygon), Location(400, 300, simplePolygon2))
+hitPercentage.count(_ == true) / hitPercentage.length.toDouble
 
-val bbG2 = boundingBox(basicGroup)
+val good3 = Seq(Point(-500,0), Point(500,0), Point(0,500))
+val simplePolygon3: Polygon = Polygon(good3: _*)
 
-bbG2.x
-bbG2.y
-bbG2.child
-
-val complexGroup =
-  Location(50, 100,
-    Group(
-      simplePolygon,
-      Location(150, 50,
-        Group(
-          Rectangle(50, 30),
-          Rectangle(300, 60),
-          Location(100, 200,
-            simplePolygon2
-          )
-        )),
-      Rectangle(100, 200)
-    ))
-
-val bbG3 = boundingBox(complexGroup)
-(bbG3.x, bbG3.y, bbG3.child)
+simplePolygon3.computeArea()
 
