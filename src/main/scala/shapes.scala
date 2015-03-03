@@ -218,6 +218,8 @@ object Location {
 class Group(val children: Shape*) extends Shape {
   require(children != null, "null children in " + getClass.getSimpleName)
   require(! children.contains(null), "null child in " + getClass.getSimpleName)
+
+  //def allChildren(): Seq[Shape] = children
 }
 /** The companion object that allows us to use this class like a case class. */
 object Group {

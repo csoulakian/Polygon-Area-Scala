@@ -27,29 +27,34 @@ object TestFixtures {
   val good = Seq(Point(2,3), Point(5,6), Point(7,4), null)
   val simplePolygon = Polygon(good: _*)
 
-  // val simpleRectangle = Rectangle(80, 120)
 
-  // val simpleLocation = Location(70, 30, Rectangle(80, 120))
+  /** fixtures for TestBoundingBox
+    *
+    */
+  val good2 = Seq(Point(7,5), Point(10,2), Point(13,6))
+  val simplePolygon2 = Polygon(good2: _*)
 
-  //  val basicGroup = Group(Ellipse(50, 30), Rectangle(20, 40))
-  //
-  //  val simpleGroup = Group(
-  //    Location(200, 100, Ellipse(50, 30)),
-  //	Location(400, 300, Rectangle(100, 50))
-  //  )
+  val simpleRectangle = Rectangle(80, 120)
 
-  //  val complexGroup =
-  //    Location(50, 100,
-  //      Group(
-  //	      Ellipse(20, 40),
-  //	      Location(150, 50,
-  //          Group(
-  //            Rectangle(50, 30),
-  //            Rectangle(300, 60),
-  //            Location(100, 200,
-  //              Ellipse(50, 30)
-  //            )
-  //        )),
-  //        Rectangle(100, 200)
-  //    ))
+  val simpleLocation = Location(70, 30, Rectangle(80, 120))
+
+  val basicGroup = Group(simplePolygon, Location(50, 30, Rectangle(20, 40)))
+
+    val simpleGroup = Group(
+      Location(-200, -100, simplePolygon), Location(400, 300, simplePolygon2))
+
+    val complexGroup =
+      Location(50, 100,
+        Group(
+  	      simplePolygon,
+  	      Location(150, 50,
+            Group(
+              Rectangle(50, 30),
+              Rectangle(300, 60),
+              Location(100, 200,
+                simplePolygon2
+              )
+          )),
+          Rectangle(100, 200)
+      ))
 }
