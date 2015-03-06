@@ -8,8 +8,8 @@ import org.scalatest.FunSuite
 class TestLines extends FunSuite{
 
   test("A ray from a single point should return the correct line segment"){
-    val myRay = Ray(singlePoint)
-    val mySegment: LineSegment = myRay.apply(singlePoint)
+    val myRay = new Ray(singlePoint)
+    val mySegment: LineSegment = myRay.asInstanceOf[LineSegment]
     assert(mySegment.firstP === singlePoint)
     assert(mySegment.secondP === Point(singlePoint.x + 1000, singlePoint.y))
   }
@@ -56,32 +56,30 @@ class TestLines extends FunSuite{
 
   test("Check for intersection of a ray and vertical line segment") {
     // ray starts to the left of segment
-    assert(blueRight.lineRayIntersect(Ray(Point(2, 0))))
+    assert(blueRight.lineLineIntersect(new Ray(Point(2, 0))))
 
     // ray starts above segment
-    assert(!blueRight.lineRayIntersect(Ray(Point(5, 8))))
+    assert(!blueRight.lineLineIntersect(new Ray(Point(5, 8))))
 
     // ray starts to the right of segment
-    // not passing
-    //assert(!blueRight.lineRayIntersect(Ray(Point(8, 0))))
+    assert(!blueRight.lineLineIntersect(new Ray(Point(8, 0))))
 
     // ray starts below segment
-    assert(!blueRight.lineRayIntersect(Ray(Point(5, -8))))
+    assert(!blueRight.lineLineIntersect(new Ray(Point(5, -8))))
   }
 
   test("Check for intersection of a ray and horizontal line segment") {
     // ray starts to the left of segment
-    // not passing, code doesn't take into account overlapping ray and line segment
-    //assert(blueTop.lineRayIntersect(Ray(Point(-8, 5))))
+    assert(blueTop.lineLineIntersect(new Ray(Point(-8, 5))))
 
     // ray starts above segment
-    assert(!blueTop.lineRayIntersect(Ray(Point(8, 0))))
+    assert(!blueTop.lineLineIntersect(new Ray(Point(8, 0))))
 
     // ray starts to the right of segment
-    assert(!blueTop.lineRayIntersect(Ray(Point(8, 5))))
+    assert(!blueTop.lineLineIntersect(new Ray(Point(8, 5))))
 
     // ray starts below segment
-    assert(!blueTop.lineRayIntersect(Ray(Point(0, 2))))
+    assert(!blueTop.lineLineIntersect(new Ray(Point(0, 2))))
   }
 
 }

@@ -2,8 +2,6 @@ package edu.luc.cs.laufer.cs372.shapes
 
 object TestFixtures {
 
-  // TODO comment these fixtures back in after adding the required case classes
-
   /** fixtures for TestLines
     * @see LinesFixture.jpg
     */
@@ -40,21 +38,36 @@ object TestFixtures {
 
   val basicGroup = Group(simplePolygon, Location(50, 30, Rectangle(20, 40)))
 
-    val simpleGroup = Group(
-      Location(-200, -100, simplePolygon), Location(400, 300, simplePolygon2))
+  val simpleGroup =
+    Group(Location(-200, -100, simplePolygon), Location(400, 300, simplePolygon2))
 
-    val complexGroup =
-      Location(50, 100,
-        Group(
-  	      simplePolygon,
-  	      Location(150, 50,
-            Group(
-              Rectangle(50, 30),
-              Rectangle(300, 60),
-              Location(100, 200,
-                simplePolygon2
-              )
+  val complexGroup =
+    Location(50, 100,
+      Group(
+        simplePolygon,
+        Location(150, 50,
+          Group(
+            Rectangle(50, 30),
+            Rectangle(300, 60),
+            Location(100, 200,
+              simplePolygon2
+            )
           )),
-          Rectangle(100, 200)
+        Rectangle(100, 200)
       ))
+
+  /** fixtures for TestArea
+    *
+    */
+  val good3 = Seq(Point(-500,0), Point(500,0), Point(0,500))
+  val polyTri: Polygon = Polygon(good3: _*)
+
+  val good4 = Seq(Point(-500, 500),Point(-500, 750),Point(500, 750),Point(500, 500))
+  val polyRect: Polygon = Polygon(good4: _*)
+
+  val good5 = Seq(Point(-500, 0),Point(-500, 250),Point(500, 250),Point(500, 0))
+  val smallerPolyRect: Polygon = Polygon(good5: _*)
+
+  val group1: Group = Group(polyTri, polyRect)
+  val group2: Group = Group(polyTri, smallerPolyRect)
 }

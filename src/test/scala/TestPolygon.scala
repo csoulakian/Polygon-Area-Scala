@@ -23,11 +23,13 @@ class TestPolygon extends FunSuite {
   }
 
   test("A point inside the polygon should correctly list inside polygon") {
-    assert(simplePolygon.pointInsidePoly(Point(4,4)))
-    assert(simplePolygon.pointInsidePoly(Point(5,4)))
-    assert(!simplePolygon.pointInsidePoly(Point(3,5)))
-    assert(!simplePolygon.pointInsidePoly(Point(6,2)))
-    // test to confirm (5,5) was inside failed - I think because it is in line with a vertex
+    info("but does not account for points whose ray goes through a vertex of the polygon")
+    assert(pointInsideShape(simplePolygon, Point(5,6)))
+    assert(pointInsideShape(simplePolygon, Point(5,5)))
+    assert(pointInsideShape(simplePolygon, Point(6,5)))
+    assert(!pointInsideShape(simplePolygon, Point(3,5)))
+    assert(!pointInsideShape(simplePolygon, Point(6,2)))
   }
+
 
 }

@@ -21,7 +21,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
   require(firstP != secondP || firstP.x != secondP.x
     && firstP.y != secondP.y, "cannot create line segment with the same point")
 
-  /** Finds the equation of a line that goes through two points
+  /** Finds the equation of a line that goes through the two points
     * of a line segment. If a vertical line is formed and
     * m = +- infinity, then equation is of the form x = b.
     *
@@ -32,7 +32,7 @@ case class LineSegment(firstP: Point, secondP: Point) {
     val line: LineSegment = LineSegment.this
     val p1: Point = line.firstP
     val p2: Point = line.secondP
-    val m: Double = (p2.y.toDouble - p1.y) / (p2.x - p1.x)
+    val m: Double = ((p2.y.toDouble - p1.y) / (p2.x - p1.x)) + 0.00
     val b: Double = m match {
       case 0.00 => p1.y.toDouble
       case Double.NegativeInfinity => p1.x.toDouble
@@ -52,8 +52,8 @@ case class LineSegment(firstP: Point, secondP: Point) {
     else false
   }
 
-  // property of a line segment to indicate it was originally a ray. default is false
-  var originalRay: Boolean = false
+  // property of a line segment to indicate it was originally a ray
+  val originalRay: Boolean = this.isInstanceOf[Ray]
 
   /** Determines if a point found on a line is within a particular line segment.
     * Only checks x and y constrains from the line segment.
@@ -97,7 +97,8 @@ case class LineSegment(firstP: Point, secondP: Point) {
     // if lines are parallel, check if they overlap
     if(parallel) {
       if(eq1._2 != eq2._2) false
-      else if (line1.pointOnLineSeg(line2.firstP) || line1.pointOnLineSeg(line2.secondP)) true
+      else if (line1.pointOnLineSeg(line2.firstP) || line1.pointOnLineSeg(line2.secondP) ||
+        line2.pointOnLineSeg(line1.firstP) || line2.pointOnLineSeg(line1.secondP)) true
       else false
     }
 
@@ -123,42 +124,20 @@ case class LineSegment(firstP: Point, secondP: Point) {
       }
       val intP: Point = Point(intersectPx, intersectPy)
 
-      // if line2 was originally a ray, checks if point of intersection is on
-      // line segment 1 only. otherwise, checks on either line segment.
-      if (line2.originalRay) {
-        line1.pointOnLineSeg(intP)
-      }
-      else line1.pointOnLineSeg(intP) || line2.pointOnLineSeg(intP)
+      // checks if intersection point is on both line segments
+      line1.pointOnLineSeg(intP) && line2.pointOnLineSeg(intP)
     }
   }
 
-  /** Determines if a line segment and ray intersect
-    *
-    * @param ray second line segment to check for intersection as a ray
-    * @return true if they intersect, otherwise false
-    */
-  def lineRayIntersect(ray: Ray): Boolean = {
-    val line: LineSegment = LineSegment.this
-    val rayAsSegment = ray.apply(ray.startingP)
-    rayAsSegment.originalRay = true
-    line.lineLineIntersect(rayAsSegment)
-  }
 }
 
 /** A ray representing a horizontal line segment that starts at a
-  * particular point and ends at a point 500 units away.
-  * When apply method is called, sets resulting line segment's
-  * originalRay property to true.
+  * particular point and ends at a point 1000 units away.
   *
-  * @param startingP the initial starting point of a ray
+  * @param sP the initial starting point of a ray
   */
-case class Ray(startingP: Point) {
-  def apply(sP: Point): LineSegment = {
-    val ls = LineSegment(sP, Point(sP.x + 1000, sP.y))
-    ls.originalRay = true
-    ls
-  }
-}
+class Ray(sP: Point) extends LineSegment(sP, Point(sP.x + 1000, sP.y))
+
 
 /** A simple closed polygon composed of three or more points.
   * Sequence of non-null inputPoints is in val points.
@@ -169,29 +148,12 @@ case class Polygon(inputPoints: Point*) extends Shape {
   val points = inputPoints.filter(_ != null)
   require(points.size > 2, "not enough non-null points!")
 
+  // returns a list of the line segments that compose the polygon
   def polyLineSeg(): List[LineSegment] = {
     val line = this.points.sliding(2).map {case Seq(a, b) => LineSegment(a, b)}.toList
     line :+ LineSegment(this.points.last, this.points(0))
   }
-
-  def pointInsidePoly(p: Point): Boolean = {
-    val polygon: Polygon = Polygon.this
-
-    val perChecks: List[Boolean] = for(l:LineSegment <- polygon.polyLineSeg()) yield l.pointOnLine(p)
-    //first check if point is on perimeter of polygon, point is considered inside polygon
-    if(perChecks.contains(true)) true
-    else {
-      val ray = Ray(p)
-      val hits: List[Boolean] = for(l:LineSegment <- polygon.polyLineSeg()) yield l.lineRayIntersect(ray)
-      if (hits.count(_ == true) %2 == 0){
-        false
-      }
-      else true
-    }
-  }
-
 }
-
 
 /**
  * A decorator for specifying a shape's location.
@@ -223,6 +185,3 @@ object Group {
   def apply(children: Shape*) = new Group(children: _*)
   def unapply(g: Group) = Some(g.children)
 }
-
-// TODO add missing case classes (see test fixtures)
-// TODO must include validity checking for constructor arguments
