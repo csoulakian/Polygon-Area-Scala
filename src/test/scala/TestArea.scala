@@ -5,9 +5,16 @@ import org.scalatest.FunSuite
 
 class TestArea extends FunSuite {
 
+  test("A rectangle should have an area equal to its bounding box") {
+    assert(area(simpleRectangle) === area(boundingBox(simpleRectangle).child))
+    assert(area(Location(60, 70, simpleRectangle)) ===
+      area(boundingBox(Location(60, 70, simpleRectangle)).child))
+  }
+
   test("A polygon in the shape of a rectangle should have an area equal to its bounding box") {
     assert(area(polyRect) === area(boundingBox(polyRect).child))
-    assert(area(Location(60, 70, polyRect)) === area(boundingBox(Location(60, 70, polyRect)).child))
+    assert(area(Location(60, 70, polyRect)) ===
+      area(boundingBox(Location(60, 70, polyRect)).child))
   }
 
   test("A polygon in the shape of a triangle should have an area of about 250000") {

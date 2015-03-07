@@ -165,7 +165,6 @@ class Location(val x: Int, val y: Int, val child: Shape) extends Shape {
 /** The companion object that allows us to use this class like a case class. */
 object Location {
   def apply(x: Int, y: Int, child: Shape) = new Location(x, y, child)
-  def unapply(l: Location) = Some((l.x, l.y, l.child))
 }
 
 /**
@@ -179,5 +178,4 @@ class Group(val children: Shape*) extends Shape {
 /** The companion object that allows us to use this class like a case class. */
 object Group {
   def apply(children: Shape*) = new Group(children: _*)
-  def unapply(g: Group) = Some(g.children)
 }

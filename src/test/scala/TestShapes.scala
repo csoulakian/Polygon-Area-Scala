@@ -20,6 +20,12 @@ class TestShapes extends FunSuite {
       LineSegment(Point(5,6),Point(7,4)), LineSegment(Point(7,4),Point(2,3))))
   }
 
+  test("A point inside a rectangle should correctly list inside rectangle") {
+    assert(pointInsideShape(simpleRectangle, Point(53, 70)))
+    assert(pointInsideShape(simpleRectangle, Point(5, 120)))
+    assert(!pointInsideShape(simpleRectangle, Point(50, 150)))
+  }
+
   test("A point inside a polygon should correctly list inside polygon") {
     info("but does not account for points whose ray goes through a vertex of the polygon")
     assert(pointInsideShape(simplePolygon, Point(5,6)))
