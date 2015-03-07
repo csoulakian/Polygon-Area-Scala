@@ -20,7 +20,7 @@ class TestShapes extends FunSuite {
       LineSegment(Point(5,6),Point(7,4)), LineSegment(Point(7,4),Point(2,3))))
   }
 
-  test("A point inside the polygon should correctly list inside polygon") {
+  test("A point inside a polygon should correctly list inside polygon") {
     info("but does not account for points whose ray goes through a vertex of the polygon")
     assert(pointInsideShape(simplePolygon, Point(5,6)))
     assert(pointInsideShape(simplePolygon, Point(5,5)))
@@ -29,5 +29,32 @@ class TestShapes extends FunSuite {
     assert(!pointInsideShape(simplePolygon, Point(6,2)))
   }
 
+  test("A location cannot have a null child shape") {
+    intercept[IllegalArgumentException] {
+      val badLocation = Location(3, 2, null)
+    }
+  }
+
+  test("A point inside a polygon at a different location is still inside the polygon") {
+    assert(pointInsideShape(Location(5,5,simplePolygon), Point(10,11)))
+    assert(pointInsideShape(Location(5,5,simplePolygon), Point(10,10)))
+    assert(pointInsideShape(Location(5,5,simplePolygon), Point(11,10)))
+    assert(!pointInsideShape(Location(5,5,simplePolygon), Point(8,10)))
+    assert(!pointInsideShape(Location(5,5,simplePolygon), Point(11,7)))
+  }
+
+  test("A group cannot contain a null child shape") {
+    intercept[IllegalArgumentException] {
+      val badGroup = Group(simplePolygon, null)
+    }
+  }
+
+  test("A point inside a group of polygons should correctly list inside the group") {
+    assert(pointInsideShape(group, Point(5,6)))
+    assert(pointInsideShape(group, Point(7,5)))
+    assert(pointInsideShape(group, Point(12,5)))
+    assert(!pointInsideShape(group, Point(7,6)))
+    assert(!pointInsideShape(group, Point(6,2)))
+  }
 
 }

@@ -36,9 +36,9 @@ object pointInsideShape {
         else true
       }
     case g: Group =>
-      val check: Boolean = false
+      var check: Boolean = false
       for (shape <- g.children) {
-        if (pointInsideShape(shape, p)) check
+        if (pointInsideShape(shape, p)) check = true
       }
       check
   }

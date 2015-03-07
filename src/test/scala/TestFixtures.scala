@@ -19,19 +19,20 @@ object TestFixtures {
   val greenRight = LineSegment(Point(8, -3), Point(-3, 8))
 
 
-  /** fixtures for TestPolygon
+  /** fixtures for TestShapes
     *
     */
   val good = Seq(Point(2,3), Point(5,6), Point(7,4), null)
   val simplePolygon = Polygon(good: _*)
 
+  val good2 = Seq(Point(7,5), Point(10,2), Point(13,6))
+  val simplePolygon2 = Polygon(good2: _*)
+
+  val group = Group(simplePolygon, simplePolygon2)
 
   /** fixtures for TestBoundingBox
     *
     */
-  val good2 = Seq(Point(7,5), Point(10,2), Point(13,6))
-  val simplePolygon2 = Polygon(good2: _*)
-
   val simpleRectangle = Rectangle(80, 120)
 
   val simpleLocation = Location(70, 30, Rectangle(80, 120))
