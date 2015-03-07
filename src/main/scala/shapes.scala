@@ -161,10 +161,6 @@ case class Polygon(inputPoints: Point*) extends Shape {
  */
 class Location(val x: Int, val y: Int, val child: Shape) extends Shape {
   require(child != null, "null child in " + getClass.getSimpleName)
-  override def equals(o: Any) = o match {
-    case that: Location => this.x == that.x && this.y == that.y && this.child == that.child
-    case _ => false
-  }
 }
 /** The companion object that allows us to use this class like a case class. */
 object Location {

@@ -7,6 +7,47 @@ import org.scalatest.FunSuite
   */
 class TestLines extends FunSuite{
 
+  test("A line segment cannot be created with a single point") {
+    val thrown = intercept[IllegalArgumentException] {
+      val badLineSegment = LineSegment(Point(2,3), Point(2,3))
+    }
+    assert(thrown.getMessage ===
+      "requirement failed: cannot create line segment with the same point")
+  }
+
+  test("Equation function should return the correct slope intercept values") {
+    val eqHor = blueTop.equation()
+    assert(eqHor._1 === 0.0)
+    assert(eqHor._2 === 5.0)
+
+    val eqVer = blueLeft.equation()
+    assert(eqVer._1 === Double.NegativeInfinity || eqVer._1 === Double.PositiveInfinity)
+    assert(eqVer._2 === -5.0)
+
+    val eqNeg = greenRight.equation()
+    assert(eqNeg._1 === -1.0)
+    assert(eqNeg._2 === 5.0)
+
+    val eqPos = redRight.equation()
+    assert(eqPos._1 === 1.0)
+    assert(eqPos._2 === -5.0)
+  }
+
+  test("A line segment with no slope is vertical") {
+    assert(blueLeft.vertical)
+    assert(!blueTop.vertical)
+  }
+
+  test("Check if a point on a line is on a particular line segment") {
+    assert(!blueTop.pointOnLine(Point(0,6)))
+
+    assert(blueTop.pointOnLine(Point(-6,5)))
+    assert(!blueTop.pointOnLineSeg(Point(-6,5)))
+
+    assert(blueTop.pointOnLine(Point(-5,5)))
+    assert(blueTop.pointOnLineSeg(Point(-5,5)))
+  }
+
   test("A ray from a single point should return the correct line segment"){
     val myRay = new Ray(singlePoint)
     val mySegment: LineSegment = myRay.asInstanceOf[LineSegment]
